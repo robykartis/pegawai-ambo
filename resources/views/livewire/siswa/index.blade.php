@@ -9,7 +9,7 @@
         </x-slot:middle>
 
         <x-slot:actions>
-            <x-button label="Tambah" link="/tambah/siswa" responsive icon-right="o-x-circle" />
+            <x-button label="Tambah" link="{{ route('siswa.create') }}" responsive icon-right="o-x-circle" />
             <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
         </x-slot:actions>
 
@@ -18,7 +18,18 @@
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$siswa" with-pagination />
+        <x-table :headers="$headers" :rows="$siswa" with-pagination>
+            @scope('actions', $siswa)
+                <div class="flex">
+                    <x-button icon="o-eye" link="{{ route('siswa.show', $siswa['id']) }}" spinner
+                        class="btn-ghost btn-sm text-yellow-500" />
+                    <x-button icon="o-pencil" link="{{ route('siswa.edit', $siswa['id']) }}" spinner
+                        class="btn-ghost btn-sm text-sky-500" />
+                    <x-button icon="o-trash" wire:click="delete({{ $siswa['id'] }})" wire:confirm="Are you sure?" spinner
+                        class="btn-ghost btn-sm text-red-500" />
+                </div>
+            @endscope
+        </x-table>
     </x-card>
 
     <!-- FILTER DRAWER -->

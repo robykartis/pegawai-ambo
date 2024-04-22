@@ -91,9 +91,9 @@ class Index extends Component
 
         $headers = [
             ['key' => 'id', 'label' => '#'],
-            ['key' => 'name', 'label' => 'Nama Siswa'],
+            ['key' => 'name', 'label' => 'Nama Siswa', 'searchable' => true],
             ['key' => 'nis', 'label' => 'Nis Siswa'],
-            ['key' => 'alamat', 'label' => 'Alamat Siswa'],
+            ['key' => 'alamat', 'label' => 'Alamat Siswa', 'sortable' => true],
         ];
 
         return view('livewire.siswa.index', [
@@ -103,6 +103,22 @@ class Index extends Component
                 dd($query);
             })
                 ->paginate(10)
+
         ]);
+    }
+    public function delete($id): void
+    {
+        $this->warning("Will delete #$id", 'It is fake.', position: 'toast-bottom');
+        Siswa::where('id', $id)->delete();
+        $this->toast(
+            type: 'success',
+            title: 'Data Berhasilwa Dihapus',
+            description: null,
+            position: 'toast-top toast-end',
+            icon: 'o-information-circle',
+            css: 'alert-info',
+            timeout: 3000,
+            redirectTo: route('siswa.index')
+        );
     }
 }
