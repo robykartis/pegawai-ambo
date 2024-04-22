@@ -11,7 +11,7 @@
                 <h1 class="text-2xl"><b>Nis :</b> {{ $nis }}</h1>
                 <h1 class="text-2xl"><b>Alamat :</b> {{ $alamat }}</h1>
                 <x-slot:actions>
-                    <x-button label="Back" class="btn-primary" link="/siswa" />
+                    <x-button label="Back" class="btn-primary" link="/" />
                 </x-slot:actions>
             </x-card>
         </div>

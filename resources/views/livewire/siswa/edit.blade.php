@@ -13,7 +13,7 @@
                     <x-input label="Alamat Siswa" wire:model="alamat" />
 
                     <x-slot:actions>
-                        <x-button label="Cancel" link="/siswa" />
+                        <x-button label="Cancel" link="/" />
                         <x-button label="Update" class="btn-primary" type="submit" spinner="save2" />
                     </x-slot:actions>
                 </x-form>

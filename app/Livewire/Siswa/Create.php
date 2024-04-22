@@ -33,7 +33,7 @@ class Create extends Component
         Siswa::create($validated);
         $this->toast(
             type: 'success',
-            title: 'Data Berhasilwa Ditambahkan',
+            title: 'Data Berhasil Ditambahkan',
             description: null,
             position: 'toast-top toast-end',
             icon: 'o-information-circle',

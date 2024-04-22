@@ -112,7 +112,7 @@ class Index extends Component
         Siswa::where('id', $id)->delete();
         $this->toast(
             type: 'success',
-            title: 'Data Berhasilwa Dihapus',
+            title: 'Data Berhasil Dihapus',
             description: null,
             position: 'toast-top toast-end',
             icon: 'o-information-circle',
