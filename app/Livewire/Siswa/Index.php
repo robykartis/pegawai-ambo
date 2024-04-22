@@ -14,13 +14,15 @@ class Index extends Component
     use Toast;
 
     public string $search = '';
+    public string $name = '';
+    public string $nis = '';
 
     public bool $drawer = false;
 
     public array $sortBy = ['column' => 'name', 'nis' => 'asc'];
 
     // Selected option
-    public $user_Single;
+    public ?int $user_Single = null;
     public $user_Multi = [];
 
     // Options list
@@ -29,7 +31,10 @@ class Index extends Component
 
     public Collection $data;
 
-
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
     public function mount()
     {
         // Fill options when component first renders
@@ -73,38 +78,73 @@ class Index extends Component
             ->get()
             ->merge($collection);
     }
-    function Cari_single($value)
+    public function Cari_single()
     {
-        $this->usersSingle = Siswa::where('name', 'like', "%$value%")
-            ->orderBy('name')
+        $data =  Siswa::query()
+            ->when($this->search, function ($query) {
+                $query->where(function ($subQuery) {
+                    $subQuery->where('id', 'like', '%' . $this->search . '%')
+                        ->orWhere('nis', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->user_Single, function ($query) {
+                $query->where('id', $this->user_Single);
+            })
             ->get();
+
+        dd($data);
     }
-    function save()
+
+
+
+
+    function single_clear()
     {
-        foreach ($this->user_Multi as $item) {
-            $ala[] = Siswa::select('alamat')->where('id', $item)->first();
-        }
-        // dd($ala);
+        $this->name = '';
     }
+
     public function render()
     {
 
         $headers = [
-            ['key' => 'id', 'label' => '#'],
+            ['key' => 'id', 'label' => '#', 'searchable' => true],
             ['key' => 'name', 'label' => 'Nama Siswa', 'searchable' => true],
-            ['key' => 'nis', 'label' => 'Nis Siswa'],
-            ['key' => 'alamat', 'label' => 'Alamat Siswa', 'sortable' => true],
+            ['key' => 'nis', 'label' => 'Nis Siswa', 'sortable' => true],
+            ['key' => 'alamat', 'label' => 'Alamat Siswa'],
         ];
 
         return view('livewire.siswa.index', [
             'headers' => $headers,
-            'siswa' => Siswa::when($this->user_Multi, function ($query) {
-                // return $query->where('column', 'value');
-                dd($query);
-            })
-                ->paginate(10)
-
+            'data' => Siswa::all(),
+            'siswa' => Siswa::query()
+                ->when($this->search, function ($query) {
+                    $query->where(function ($subQuery) {
+                        $subQuery->where('name', 'like', '%' . $this->search . '%')
+                            ->orWhere('nis', 'like', '%' . $this->search . '%');
+                    });
+                })
+                ->when($this->name, function ($query) {
+                    $query->where('name', 'like', '%' . $this->name . '%');
+                })
+                ->when($this->user_Single, function ($query) {
+                    $query->where('id', 'like', '%' . $this->user_Single . '%');
+                })
+                ->when($this->nis, function ($query) {
+                    $query->where('nis', 'like', '%' . $this->nis . '%');
+                })
+                ->paginate(10),
         ]);
+
+        // return view('livewire.siswa.index', [
+        //     'headers' => $headers,
+        //     'siswas'=>Siswa::search($this->search),
+        //     'siswa' => Siswa::when($this->user_Multi, function ($query) {
+        //         // return $query->where('column', 'value');
+        //         dd($query);
+        //     })
+        //         ->paginate(10)
+
+        // ]);
     }
     public function delete($id): void
     {

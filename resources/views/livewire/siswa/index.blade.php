@@ -35,17 +35,12 @@
     <!-- FILTER DRAWER -->
     <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/2">
 
-        {{-- Notice `searchable` + `single` --}}
-        <x-choices label="Nama Siswa Single" wire:model="user_Single" :options="$usersSingle" search-function="Cari_single"
-            single searchable />
+        <x-choices label="Nama Siswa Single" wire:model="name" :options="$usersSingle" search-function="Cari_single" single
+            searchable />
 
 
-
-        {{-- <x-choices label="Alamat Siswa Multi" wire:model="user_Multi" :options="$usersMulti" search-function="Cari_multi"
-            searchable /> --}}
         <x-choices label="Alamat Siswa Multi" wire:model="user_Multi" :options="$usersMulti" search-function="Cari_multi"
             searchable>
-            {{-- Item slot --}}
             @scope('item', $usersMulti)
                 <x-list-item :item="$usersMulti" sub-value="bio">
                     <x-slot:actions>
@@ -53,18 +48,14 @@
                     </x-slot:actions>
                 </x-list-item>
             @endscope
-
-
-            {{-- Selection slot --}}
             @scope('selection', $usersMulti)
                 {{ $usersMulti->alamat }}
             @endscope
-
-
         </x-choices>
         <x-slot:actions>
-            <x-button label="Reset" icon="o-x-mark" wire:click="save" spinner />
-            <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />
+            <x-button label="Reset" icon="o-x-mark" wire:click="single_clear" spinner />
+            <x-button label="Done" icon="o-check" wire:click="Cari_single" class="btn-primary"
+                @click="$wire.drawer = false" />
         </x-slot:actions>
     </x-drawer>
 </div>

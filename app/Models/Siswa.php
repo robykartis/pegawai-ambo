@@ -10,4 +10,8 @@ class Siswa extends Model
     use HasFactory;
     protected $table = 'siswas';
     protected $guarded = ['id'];
+    public function scopeSearch($query, $value)
+    {
+        $query->where('name', 'like', "%{$value}%")->orWhere('alamat', 'like', "%{$value}%");
+    }
 }
