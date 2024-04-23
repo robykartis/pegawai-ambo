@@ -24,6 +24,8 @@ class Index extends Component
     // Selected option
     public ?int $user_Single = null;
     public $user_Multi = [];
+    // data alamat
+    public $data_alamat = [];
 
     // Options list
     public Collection $usersSingle;
@@ -63,8 +65,6 @@ class Index extends Component
 
     function Cari_multi(string $value = '')
     {
-
-
         $collection = collect(); // Inisialisasi koleksi kosong
 
         foreach ($this->user_Multi as $item) {
@@ -78,29 +78,50 @@ class Index extends Component
             ->get()
             ->merge($collection);
     }
-    public function Cari_single()
+
+    public function Cari_single(string $value = '')
     {
-        $data =  Siswa::query()
-            ->when($this->search, function ($query) {
-                $query->where(function ($subQuery) {
-                    $subQuery->where('id', 'like', '%' . $this->search . '%')
-                        ->orWhere('nis', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->when($this->user_Single, function ($query) {
-                $query->where('id', $this->user_Single);
-            })
+        // reset Data single
+        // $this->user_Single = null;
+
+        // Pencarian Data Single
+        $this->usersSingle =  Siswa::where('name', 'like', "%$value%")
+            ->groupBy('name')
             ->get();
 
-        dd($data);
+        // dd($data);
     }
-
-
-
+    function pencarian()
+    {
+        if ($this->usersSingle) {
+            $this->usersSingle =  Siswa::where('id', 'like', '%' . $this->user_Single . '%')
+                ->groupBy('name')
+                ->get();
+        }
+        // dd($this->user_Multi);
+        // $siswa = Siswa::whereIn('id', $this->user_Multi)->get();
+        // dd($siswa);
+        if ($this->user_Multi) {
+            foreach ($this->user_Multi as $key => $value) {
+                $ala[] = Siswa::select('alamat')
+                    ->where('id', "$value")
+                    ->first();
+            }
+            // dd($ala);
+            $this->data_alamat = [];
+            foreach ($ala as $key => $valuea) {
+                // dd($valuea->alamat);
+                $this->data_alamat[] = $valuea->alamat;
+            }
+        }
+        // dd($this->data_alamat);
+    }
 
     function single_clear()
     {
-        $this->name = '';
+        $this->user_Single = null;
+        $this->user_Multi = [];
+        $this->data_alamat = [];
     }
 
     public function render()
@@ -132,6 +153,17 @@ class Index extends Component
                 ->when($this->nis, function ($query) {
                     $query->where('nis', 'like', '%' . $this->nis . '%');
                 })
+                ->when($this->user_Single, function ($query) {
+                    $query->where('id', $this->user_Single);
+                })
+                ->when($this->data_alamat, function ($query) {
+                    // $query->whereIn('alamat', $this->data_alamat);
+                    foreach ($this->data_alamat as $alamat) {
+                        // dd($alamat);
+                        $query->orWhere('alamat', $alamat);
+                    }
+                })
+                // ->whereIn('alamat', $this->data_alamat)
                 ->paginate(10),
         ]);
 

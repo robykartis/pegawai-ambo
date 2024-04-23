@@ -33,28 +33,32 @@
     </x-card>
 
     <!-- FILTER DRAWER -->
-    <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/2">
+    <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
 
-        <x-choices label="Nama Siswa Single" wire:model="name" :options="$usersSingle" search-function="Cari_single" single
-            searchable />
+        <x-choices label="Nama Siswa Single" wire:model="user_Single" :options="$usersSingle" search-function="Cari_single"
+            single searchable />
 
 
         <x-choices label="Alamat Siswa Multi" wire:model="user_Multi" :options="$usersMulti" search-function="Cari_multi"
             searchable>
             @scope('item', $usersMulti)
+                <x-alert style="background-color: #faf7f5" :title="$usersMulti->alamat" />
+            @endscope
+            {{-- @scope('item', $usersMulti)
                 <x-list-item :item="$usersMulti" sub-value="bio">
                     <x-slot:actions>
                         <x-badge :value="$usersMulti->alamat" />
                     </x-slot:actions>
                 </x-list-item>
-            @endscope
+            @endscope --}}
+
             @scope('selection', $usersMulti)
                 {{ $usersMulti->alamat }}
             @endscope
         </x-choices>
         <x-slot:actions>
             <x-button label="Reset" icon="o-x-mark" wire:click="single_clear" spinner />
-            <x-button label="Done" icon="o-check" wire:click="Cari_single" class="btn-primary"
+            <x-button label="Done" icon="o-check" wire:click="pencarian" class="btn-primary"
                 @click="$wire.drawer = false" />
         </x-slot:actions>
     </x-drawer>
